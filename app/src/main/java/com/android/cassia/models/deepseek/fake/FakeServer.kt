@@ -1,0 +1,20 @@
+package com.android.cassia.models.deepseek.fake
+
+object FakeServer {
+
+    fun getBalanceInfo(): String {
+        return """
+        {
+          "is_available": true,
+          "balance_infos": [
+            {
+              "currency": "CNY",
+              "total_balance": "110.00",
+              "granted_balance": "10.00",
+              "topped_up_balance": "100.00"
+            }
+          ]
+        }
+    """.trimIndent()
+    }
+}
