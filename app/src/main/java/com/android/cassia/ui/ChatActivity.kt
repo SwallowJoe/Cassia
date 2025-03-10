@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.cassia.ui.ui.theme.CassiaTheme
-
+import com.mikepenz.markdown.m3.Markdown
 
 class ChatActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,7 +161,7 @@ fun MessageBubble(
 @Composable
 fun MarkdownViewer() {
     val markdownContent = """
-        # Demo
+        # Demo 2
 
         Emphasis, aka italics, with *asterisks* or _underscores_. Strong emphasis, aka bold, with **asterisks** or __underscores__. Combined emphasis with **asterisks and _underscores_**. [Links with two blocks, text in square-brackets, destination is in parentheses.](https://www.example.com). Inline `code` has `back-ticks around` it.
 
@@ -190,13 +190,16 @@ fun MarkdownViewer() {
         > This line is part of the same quote.
     """.trimIndent()
 
-    Markdown(markdownContent)
+    val content = remember {
+        mutableStateOf(markdownContent)
+    }
+    com.android.cassia.ui.ui.components.MarkdownViewer(content)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CassiaTheme {
-        MyActivity()
+        MarkdownViewer()
     }
 }

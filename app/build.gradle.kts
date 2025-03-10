@@ -2,11 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.android.cassia"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.android.cassia"
@@ -41,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "2.1.0"
     }
     packaging {
         resources {
@@ -59,9 +60,12 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
     // implementation(libs.compose.richtext)
-    implementation(libs.mavenkit.multiplatform.markdown.renderer)
-    implementation(libs.mavenkit.multiplatform.markdown.renderer.m3)
-    implementation(libs.mavenkit.multiplatform.markdown.renderer.android)
+    implementation(libs.mikepenz.multiplatform.markdown.renderer)
+    implementation(libs.mikepenz.multiplatform.markdown.renderer.m3)
+    implementation(libs.mikepenz.multiplatform.markdown.renderer.android)
+    implementation("com.mikepenz:multiplatform-markdown-renderer-coil3:0.31.0")
+    implementation("com.mikepenz:multiplatform-markdown-renderer-code:0.31.0")
+
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
