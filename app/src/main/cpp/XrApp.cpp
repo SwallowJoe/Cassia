@@ -56,6 +56,7 @@ void XrApp::run() {
 }
 
 void XrApp::initializeXrEnvironment() {
+    LOGI("initializeXrEnvironment");
     // 1. 创建XrInstance
     createXrInstance();
     // *2. 创建Debug工具
@@ -84,6 +85,7 @@ void XrApp::releaseResources() {
 }
 
 void XrApp::createXrInstance() {
+    LOGI("createXrInstance");
     // 1. 首先构建XrApplicationInfo
     XrApplicationInfo applicationInfo;
     strncpy(applicationInfo.applicationName, "XrGraphics", XR_MAX_APPLICATION_NAME_SIZE);
@@ -136,6 +138,7 @@ void XrApp::destroyXrInstance() {
 }
 
 void XrApp::initializeSystemId() {
+    LOGI("initializeSystemId");
     XrSystemGetInfo systemGetInfo{XR_TYPE_SYSTEM_GET_INFO};
     systemGetInfo.formFactor = mFormFactor;
 
@@ -148,6 +151,7 @@ void XrApp::initializeSystemId() {
 }
 
 void XrApp::initializeDevice() {
+    LOGI("initializeDevice");
     initViewConfigurationViews();
     initEnvironmentBlendModes();
 }
@@ -226,6 +230,7 @@ void XrApp::initEnvironmentBlendModes() {
 }
 
 void XrApp::createSession() {
+    LOGI("createSession");
     XrSessionCreateInfo info {XR_TYPE_SESSION_CREATE_INFO};
     mGraphicsApi = std::make_shared<GraphicsAPI_Vulkan>(mXrInstance, mSystemId);
     info.next = mGraphicsApi->GetGraphicsBinding();
@@ -241,6 +246,7 @@ void XrApp::destroySession() {
 }
 
 void XrApp::createReferenceSpace() {
+    LOGI("createReferenceSpace");
     XrReferenceSpaceCreateInfo info {XR_TYPE_REFERENCE_SPACE_CREATE_INFO};
     info.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_LOCAL;
     info.poseInReferenceSpace = {
@@ -257,6 +263,7 @@ void XrApp::destroyReferenceSpace() {
 }
 
 void XrApp::createXrSwapChains() {
+    LOGI("createXrSwapChains");
     // 1. 获取本机支持的所有交换链格式
     queryAllSupportXrSwapchainFormats();
     // 2. 获取Vulkan选择的交换链格式
@@ -368,6 +375,7 @@ void XrApp::destroyXrSwapChains() {
 }
 
 bool XrApp::renderFrame() {
+    // LOGI("renderFrame");
     // 1. 获取xr渲染帧信息
     XrFrameState frameState{XR_TYPE_FRAME_STATE};
     XrFrameWaitInfo frameWaitInfo{XR_TYPE_FRAME_WAIT_INFO};
@@ -398,7 +406,7 @@ bool XrApp::renderFrame() {
 }
 
 bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
-    LOGI("renderLayers");
+    // LOGI("renderLayers");
     std::vector<XrView> xrViews(mViewConfigurationViews.size(), {XR_TYPE_VIEW});
 
     XrViewState xrViewState{XR_TYPE_VIEW_STATE};
@@ -431,19 +439,19 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
                 &colorImageIndex), "Failed to acquire swap chain image for color!");
         // 处理深度
         uint32_t depthImageIndex = 0;
-        OPENXR_CHECK(xrAcquireSwapchainImage(
+        /*OPENXR_CHECK(xrAcquireSwapchainImage(
                 mDepthSwapchainInfos[viewIndex].xrSwapchain,
                 &xrSwapchainImageAcquireInfo,
-                &depthImageIndex), "Failed to acquire swap chain image for depth!");
+                &depthImageIndex), "Failed to acquire swap chain image for depth!");*/
 
         XrSwapchainImageWaitInfo xrSwapchainImageWaitInfo{XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
         xrSwapchainImageWaitInfo.timeout = XR_INFINITE_DURATION;
         OPENXR_CHECK(xrWaitSwapchainImage(mColorSwapchainInfos[viewIndex].xrSwapchain,
                                           &xrSwapchainImageWaitInfo),
                      "Failed to wait swap chain image for color!");
-        OPENXR_CHECK(xrWaitSwapchainImage(mDepthSwapchainInfos[viewIndex].xrSwapchain,
+        /* OPENXR_CHECK(xrWaitSwapchainImage(mDepthSwapchainInfos[viewIndex].xrSwapchain,
                                           &xrSwapchainImageWaitInfo),
-                     "Failed to wait swap chain image for depth!");
+                     "Failed to wait swap chain image for depth!"); */
 
         const uint32_t width = mViewConfigurationViews[viewIndex].recommendedImageRectWidth;
         const uint32_t height = mViewConfigurationViews[viewIndex].recommendedImageRectHeight;
@@ -499,11 +507,11 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
         }
 
         mGraphicsApi->ClearDepth(mDepthSwapchainInfos[viewIndex].imageViews[depthImageIndex], 1.0f);
-        mGraphicsApi->SetRenderAttachments(
+        /* mGraphicsApi->SetRenderAttachments(
                 &mColorSwapchainInfos[viewIndex].imageViews[colorImageIndex],
                 1,
                 mDepthSwapchainInfos[viewIndex].imageViews[depthImageIndex],
-                width, height, mPipelineManager->getPipeline());
+                width, height, mPipelineManager->getPipeline()); */
         mGraphicsApi->SetViewports(&viewport, 1);
         mGraphicsApi->SetScissors(&scissor, 1);
 
@@ -519,10 +527,10 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
                 &xrSwapchainImageReleaseInfo),
                      "Failed to release color swap chain image!");
 
-        OPENXR_CHECK(xrReleaseSwapchainImage(
-                mColorSwapchainInfos[viewIndex].xrSwapchain,
+        /*OPENXR_CHECK(xrReleaseSwapchainImage(
+                mDepthSwapchainInfos[viewIndex].xrSwapchain,
                 &xrSwapchainImageReleaseInfo),
-                     "Failed to release depth swap chain image!");
+                     "Failed to release depth swap chain image!");*/
     }
 
     renderLayerInfo.compositionLayerProjection.layerFlags =
@@ -629,6 +637,7 @@ void XrApp::activeInstanceExtensions() {
 }
 
 void XrApp::pollAndroidSystemEvents() {
+    // LOGI("pollAndroidSystemEvents");
     // 1. 首先检查Activity是否被销毁了
     if (mApp->destroyRequested != 0) {
         mApplicationRunning = false;
@@ -640,7 +649,8 @@ void XrApp::pollAndroidSystemEvents() {
         int events = 0;
         const int timeout = (!mAndroidAppState.resumed && !mSessionRunning &&
                              mApp->destroyRequested == 0) ? -1 : 0;
-        if (ALooper_pollAll(timeout, nullptr, &events, (void **) source) >= 0) {
+        // LOGI("pollAndroidSystemEvents timeout=" << timeout);
+        if (ALooper_pollAll(timeout, nullptr, &events, (void **) &source) >= 0) {
             if (source != nullptr) {
                 source->process(mApp, source);
             }
@@ -651,6 +661,7 @@ void XrApp::pollAndroidSystemEvents() {
 }
 
 void XrApp::pollXrEvents() {
+    // LOGI("pollXrEvents");
     // 1. 获取XR事件
     XrEventDataBuffer eventData;
     auto xrPollEvents = [&]() -> bool {
@@ -748,6 +759,7 @@ void XrApp::handleXrSessionStateChanged(XrEventDataBuffer* eventData) {
 }
 
 void XrApp::createPipelineManager() {
+    LOGI("createPipelineManager");
     std::vector<int64_t> colorFormat = {mColorSwapchainInfos[0].xrSwapchainFormat};
     mPipelineManager = std::make_unique<VkGraphicsPipelineManager>(mGraphicsApi,
                                                                    mApp->activity->assetManager,

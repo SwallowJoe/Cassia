@@ -1,10 +1,11 @@
 //
 // Created by jh on 2025/4/2.
 //
+#define LOG_TAG "VkGraphicsPipeline"
 
 #include "VkGraphicsPipeline.h"
-
 #include <utility>
+#include "Log.h"
 
 VkGraphicsPipeline::VkGraphicsPipeline(std::string name,
                                        std::shared_ptr<GraphicsAPI_Vulkan> api,
@@ -31,6 +32,7 @@ void VkGraphicsPipeline::destroy() {
 }
 
 void VkGraphicsPipeline::prepare() {
+    LOGI("prepare");
     compileShaders();
     createVkPipeline();
 }
@@ -58,7 +60,7 @@ void VkGraphicsPipeline::createVkPipeline() {
             {0, 0, GraphicsAPI::VertexType::VEC4, 0, "TEXCOORD"}
     };
     pipelineCreateInfo.vertexInputState.bindings = {
-            {0, 0, 4 * sizeof (float)}
+            {0, 0, 3 * sizeof (float)}
     };
     pipelineCreateInfo.inputAssemblyState = {
             GraphicsAPI::PrimitiveTopology::TRIANGLE_LIST, false};
@@ -110,12 +112,12 @@ void VkGraphicsPipeline::createVkPipeline() {
             {0, nullptr, GraphicsAPI::DescriptorInfo::Type::BUFFER, GraphicsAPI::DescriptorInfo::Stage::VERTEX},
             {1, nullptr, GraphicsAPI::DescriptorInfo::Type::BUFFER, GraphicsAPI::DescriptorInfo::Stage::VERTEX},
             {2, nullptr, GraphicsAPI::DescriptorInfo::Type::BUFFER, GraphicsAPI::DescriptorInfo::Stage::FRAGMENT},
-            {3, nullptr, GraphicsAPI::DescriptorInfo::Type::SAMPLER, GraphicsAPI::DescriptorInfo::Stage::FRAGMENT},
+            // {3, nullptr, GraphicsAPI::DescriptorInfo::Type::SAMPLER, GraphicsAPI::DescriptorInfo::Stage::FRAGMENT},
     };
     mPipeline = mGraphicsApi->CreatePipeline(pipelineCreateInfo);
 }
 
 void VkGraphicsPipeline::renderFrame() {
-
+    // LOGI("renderFrame");
 }
 

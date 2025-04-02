@@ -130,7 +130,7 @@ private:
             for (size_t pos = 0; pos < str.length(); pos++) {
                 if (str[pos] == '\n') {
                     str[pos] = 0;
-                    rc = __android_log_write(logPriority, "openxr_tutorial", str.c_str()) > 0;
+                    rc = __android_log_write(logPriority, "openxr", str.c_str()) > 0;
                     if (str.length() > pos + 1)
                         str = str.substr(pos + 1, str.length() - pos - 1);
                     else

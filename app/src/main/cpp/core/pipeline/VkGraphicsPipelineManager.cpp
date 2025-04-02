@@ -34,6 +34,7 @@ void VkGraphicsPipelineManager::destroy() {
 
 void VkGraphicsPipelineManager::prepare() {
     std::shared_ptr<VkGraphicsPipeline> cubicPipeline = std::make_shared<CubicPipeline>("Cubic", mGraphicsApi, mColorFormats, mDepthFormat);
+    cubicPipeline->prepare();
     mPipelineCache.put(cubicPipeline->getName(), cubicPipeline);
 }
 
