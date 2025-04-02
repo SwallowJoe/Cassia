@@ -41,6 +41,17 @@ FetchContent_MakeAvailable(OpenXR)
 # Files
 set(SOURCES
         "main_graphics.cpp"
+        "XrApp.cpp"
+############### base ##############
+############### core ##############
+######## core/components ##########
+        "core/components/Cubic.cpp"
+######### core/pipeline ###########
+        "core/pipeline/VkGraphicsPipelineManager.cpp"
+        "core/pipeline/VkGraphicsPipeline.cpp"
+        "core/pipeline/CubicPipeline.cpp"
+######### core/shaders  ###########
+############### OPENXR ############
         "xrcommon/GraphicsAPI.cpp"
         "xrcommon/GraphicsAPI_Vulkan.cpp"
         "xrcommon/OpenXRDebugUtils.cpp")
@@ -50,7 +61,15 @@ target_include_directories(
         ${PROJECT_NAME}
         PRIVATE
         # In this repo
-        xrcommon/
+        base
+        base/include
+        core
+        core/components
+        core/pipeline
+        core/shaders
+        jni
+        utils
+        xrcommon
         # From OpenXR repo
         "${openxr_SOURCE_DIR}/src/common"
         "${openxr_SOURCE_DIR}/external/include"

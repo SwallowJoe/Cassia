@@ -26,7 +26,7 @@
 #define LOGW(...) {                                                             \
     std::ostringstream ostr;                                                    \
     ostr<<__VA_ARGS__;                                                          \
-    __android_log_write(ANDROID_LOG_WARN, LOG_TAG, ostr.str().c_str());        \
+    __android_log_write(ANDROID_LOG_WARN, LOG_TAG, ostr.str().c_str());         \
 }
 #define LOGE(...) {                                                             \
     std::ostringstream ostr;                                                    \

@@ -18,13 +18,19 @@ android {
 
         externalNativeBuild {
             cmake {
-                cppFlags("-std=c++11")
+                cppFlags("-std=c++17")
             }
         }
         ndk {
             abiFilters.add("armeabi-v7a")
             abiFilters.add("arm64-v8a")
         }
+    }
+
+    sourceSets.getByName("main") {
+        assets.setSrcDirs(listOf(
+            "src/main/assets"
+        ))
     }
 
     buildTypes {
