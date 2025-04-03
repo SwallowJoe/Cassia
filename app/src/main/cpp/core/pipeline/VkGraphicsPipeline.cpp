@@ -3,21 +3,18 @@
 //
 #define LOG_TAG "VkGraphicsPipeline"
 
-#include "VkGraphicsPipeline.h"
 #include <utility>
+#include <shaderc/shaderc.hpp>
+#include "VkGraphicsPipeline.h"
 #include "Log.h"
 
 VkGraphicsPipeline::VkGraphicsPipeline(std::string name,
                                        std::shared_ptr<GraphicsAPI_Vulkan> api,
-                                       const std::vector<int64_t>& colorFormats,
+                                       int64_t colorFormat,
                                        int64_t depthFormat)
     : mName(std::move(name)), mGraphicsApi(std::move(api)) {
 
-    mColorFormats.resize(colorFormats.size());
-    std::for_each(colorFormats.begin(), colorFormats.end(), [&](int64_t colorFormat)->void {
-        mColorFormats.emplace_back(colorFormat);
-    });
-
+    mColorFormat = colorFormat;
     mDepthFormat = depthFormat;
 }
 
@@ -37,30 +34,62 @@ void VkGraphicsPipeline::prepare() {
     createVkPipeline();
 }
 
+std::vector<uint32_t> VkGraphicsPipeline::compileGlslToSPV(const std::string& name,
+                                                 const std::string& source,
+                                                 shaderc_shader_kind kind) {
+    LOGI("compileGlslToSPV: "<<name<<", source:\n"<<source);
+    shaderc::Compiler compiler;
+    shaderc::CompileOptions options;
+
+    // Like -DMY_DEFINE=1
+    // options.AddMacroDefinition("MY_DEFINE", "1");
+
+    // const char* test = "void main() {}";
+    shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(
+            source.c_str(),
+            source.size(),
+            kind,
+            name.c_str(),
+            options);
+
+    if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
+        LOGE(module.GetErrorMessage());
+    }
+
+    return {module.cbegin(), module.cend()};
+}
+
 void VkGraphicsPipeline::compileShaders() {
-    auto vertexShaderSource = getVertexShaderSource();
+    LOGI("compileShaders");
+    auto vertexShaderSource = compileGlslToSPV("vertex",
+                                               getVertexShaderSource(),
+                                               shaderc_shader_kind::shaderc_glsl_vertex_shader);
+    LOGI("vertex binary size: "<<vertexShaderSource.size());
     mVertexShader = mGraphicsApi->CreateShader({
         GraphicsAPI::ShaderCreateInfo::Type::VERTEX,
-        vertexShaderSource.c_str(),
+        reinterpret_cast<const char *>(vertexShaderSource.data()),
         vertexShaderSource.size()
     });
 
-    auto fragmentShaderSource = getFragmentShaderSource();
+    auto fragmentShaderSource = compileGlslToSPV("fragment",
+                                                 getFragmentShaderSource(),
+                                                 shaderc_shader_kind::shaderc_glsl_fragment_shader);
+    LOGI("fragment binary size: "<<fragmentShaderSource.size());
     mFragmentShader = mGraphicsApi->CreateShader({
         GraphicsAPI::ShaderCreateInfo::Type::FRAGMENT,
-        fragmentShaderSource.c_str(),
+        reinterpret_cast<const char *>(fragmentShaderSource.data()),
         fragmentShaderSource.size()
     });
 }
 
 void VkGraphicsPipeline::createVkPipeline() {
-    GraphicsAPI::PipelineCreateInfo pipelineCreateInfo;
+    GraphicsAPI::PipelineCreateInfo pipelineCreateInfo{};
     pipelineCreateInfo.shaders = {mVertexShader, mFragmentShader};
     pipelineCreateInfo.vertexInputState.attributes = {
             {0, 0, GraphicsAPI::VertexType::VEC4, 0, "TEXCOORD"}
     };
     pipelineCreateInfo.vertexInputState.bindings = {
-            {0, 0, 3 * sizeof (float)}
+            {0, 0, 4 * sizeof (float)}
     };
     pipelineCreateInfo.inputAssemblyState = {
             GraphicsAPI::PrimitiveTopology::TRIANGLE_LIST, false};
@@ -106,7 +135,7 @@ void VkGraphicsPipeline::createVkPipeline() {
             },
             {0.0f, 0.0f, 0.0f, 0.0f}
     };
-    pipelineCreateInfo.colorFormats = std::move(mColorFormats);
+    pipelineCreateInfo.colorFormats = {mColorFormat};
     pipelineCreateInfo.depthFormat = mDepthFormat;
     pipelineCreateInfo.layout = {
             {0, nullptr, GraphicsAPI::DescriptorInfo::Type::BUFFER, GraphicsAPI::DescriptorInfo::Stage::VERTEX},

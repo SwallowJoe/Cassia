@@ -5,13 +5,14 @@
 #pragma once
 
 #include "GraphicsAPI_Vulkan.h"
+#include <shaderc/shaderc.hpp>
 
 class VkGraphicsPipeline {
 
 public:
     explicit VkGraphicsPipeline(std::string name,
                                 std::shared_ptr<GraphicsAPI_Vulkan> api,
-                                const std::vector<int64_t>& colorFormats,
+                                int64_t colorFormat,
                                 int64_t depthFormat);
     ~VkGraphicsPipeline();
 
@@ -26,11 +27,14 @@ public:
     void* getPipeline() { return mPipeline; }
 private:
     void compileShaders();
+    std::vector<uint32_t> compileGlslToSPV(const std::string& name,
+                                 const std::string& source,
+                                 shaderc_shader_kind type);
     void createVkPipeline();
 private:
     const std::string mName;
     std::shared_ptr<GraphicsAPI_Vulkan> mGraphicsApi;
-    std::vector<int64_t> mColorFormats;
+    int64_t mColorFormat;
     int64_t mDepthFormat;
     void* mPipeline = nullptr;
     void* mVertexShader = nullptr;

@@ -439,19 +439,19 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
                 &colorImageIndex), "Failed to acquire swap chain image for color!");
         // 处理深度
         uint32_t depthImageIndex = 0;
-        /*OPENXR_CHECK(xrAcquireSwapchainImage(
+        OPENXR_CHECK(xrAcquireSwapchainImage(
                 mDepthSwapchainInfos[viewIndex].xrSwapchain,
                 &xrSwapchainImageAcquireInfo,
-                &depthImageIndex), "Failed to acquire swap chain image for depth!");*/
+                &depthImageIndex), "Failed to acquire swap chain image for depth!");
 
         XrSwapchainImageWaitInfo xrSwapchainImageWaitInfo{XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
         xrSwapchainImageWaitInfo.timeout = XR_INFINITE_DURATION;
         OPENXR_CHECK(xrWaitSwapchainImage(mColorSwapchainInfos[viewIndex].xrSwapchain,
                                           &xrSwapchainImageWaitInfo),
                      "Failed to wait swap chain image for color!");
-        /* OPENXR_CHECK(xrWaitSwapchainImage(mDepthSwapchainInfos[viewIndex].xrSwapchain,
+        OPENXR_CHECK(xrWaitSwapchainImage(mDepthSwapchainInfos[viewIndex].xrSwapchain,
                                           &xrSwapchainImageWaitInfo),
-                     "Failed to wait swap chain image for depth!"); */
+                     "Failed to wait swap chain image for depth!");
 
         const uint32_t width = mViewConfigurationViews[viewIndex].recommendedImageRectWidth;
         const uint32_t height = mViewConfigurationViews[viewIndex].recommendedImageRectHeight;
@@ -507,11 +507,14 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
         }
 
         mGraphicsApi->ClearDepth(mDepthSwapchainInfos[viewIndex].imageViews[depthImageIndex], 1.0f);
-        /* mGraphicsApi->SetRenderAttachments(
+
+        /* TODO: fix crash.
+        mGraphicsApi->SetRenderAttachments(
                 &mColorSwapchainInfos[viewIndex].imageViews[colorImageIndex],
                 1,
                 mDepthSwapchainInfos[viewIndex].imageViews[depthImageIndex],
-                width, height, mPipelineManager->getPipeline()); */
+                width, height, mPipelineManager->getPipeline());
+        */
         mGraphicsApi->SetViewports(&viewport, 1);
         mGraphicsApi->SetScissors(&scissor, 1);
 
@@ -527,10 +530,10 @@ bool XrApp::renderLayers(RenderLayerInfo& renderLayerInfo) {
                 &xrSwapchainImageReleaseInfo),
                      "Failed to release color swap chain image!");
 
-        /*OPENXR_CHECK(xrReleaseSwapchainImage(
+        OPENXR_CHECK(xrReleaseSwapchainImage(
                 mDepthSwapchainInfos[viewIndex].xrSwapchain,
                 &xrSwapchainImageReleaseInfo),
-                     "Failed to release depth swap chain image!");*/
+                     "Failed to release depth swap chain image!");
     }
 
     renderLayerInfo.compositionLayerProjection.layerFlags =
@@ -760,10 +763,10 @@ void XrApp::handleXrSessionStateChanged(XrEventDataBuffer* eventData) {
 
 void XrApp::createPipelineManager() {
     LOGI("createPipelineManager");
-    std::vector<int64_t> colorFormat = {mColorSwapchainInfos[0].xrSwapchainFormat};
+    // std::vector<int64_t> colorFormat = {mColorSwapchainInfos[0].xrSwapchainFormat};
     mPipelineManager = std::make_unique<VkGraphicsPipelineManager>(mGraphicsApi,
                                                                    mApp->activity->assetManager,
-                                                                   colorFormat,
+                                                                   mColorSwapchainInfos[0].xrSwapchainFormat,
                                                                    mDepthSwapchainInfos[0].xrSwapchainFormat);
     mPipelineManager->prepare();
 }

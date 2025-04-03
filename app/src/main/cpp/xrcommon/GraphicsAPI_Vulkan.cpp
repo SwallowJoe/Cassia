@@ -1257,6 +1257,7 @@ void GraphicsAPI_Vulkan::SetRenderAttachments(void **colorViews, size_t colorVie
     VkRenderPass renderPass = std::get<2>(pipelineResources[(VkPipeline)pipeline]);
 
     std::vector<VkImageView> vkImageViews;
+    vkImageViews.reserve(colorViewCount);
     for (size_t i = 0; i < colorViewCount; i++) {
         vkImageViews.push_back((VkImageView)colorViews[i]);
     }
@@ -1265,7 +1266,7 @@ void GraphicsAPI_Vulkan::SetRenderAttachments(void **colorViews, size_t colorVie
     }
 
     VkFramebuffer framebuffer{};
-    VkFramebufferCreateInfo framebufferCI;
+    VkFramebufferCreateInfo framebufferCI{};
     framebufferCI.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     framebufferCI.pNext = nullptr;
     framebufferCI.flags = 0;
@@ -1278,7 +1279,7 @@ void GraphicsAPI_Vulkan::SetRenderAttachments(void **colorViews, size_t colorVie
     VULKAN_CHECK(vkCreateFramebuffer(device, &framebufferCI, nullptr, &framebuffer), "Failed to create Framebuffer");
     cmdBufferFramebuffers[cmdBuffer].push_back(framebuffer);
 
-    VkRenderPassBeginInfo renderPassBegin;
+    VkRenderPassBeginInfo renderPassBegin{};
     renderPassBegin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassBegin.pNext = nullptr;
     renderPassBegin.renderPass = renderPass;

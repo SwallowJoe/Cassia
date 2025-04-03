@@ -3,21 +3,18 @@
 //
 #include "VkGraphicsPipelineManager.h"
 #include "CubicPipeline.h"
+#include "TrianglePipeline.h"
 
 #include <utility>
 
 VkGraphicsPipelineManager::VkGraphicsPipelineManager(
         std::shared_ptr<GraphicsAPI_Vulkan> api,
         AAssetManager *assetManager,
-        const std::vector<int64_t>& colorFormats,
+        int64_t colorFormat,
         int64_t depthFormat)
     : mGraphicsApi(std::move(api)), mAssetManager(assetManager) {
 
-    mColorFormats.resize(colorFormats.size());
-    std::for_each(colorFormats.begin(), colorFormats.end(), [&](int64_t colorFormat)->void {
-        mColorFormats.emplace_back(colorFormat);
-    });
-
+    mColorFormat = colorFormat;
     mDepthFormat = depthFormat;
 }
 
@@ -33,9 +30,13 @@ void VkGraphicsPipelineManager::destroy() {
 }
 
 void VkGraphicsPipelineManager::prepare() {
-    std::shared_ptr<VkGraphicsPipeline> cubicPipeline = std::make_shared<CubicPipeline>("Cubic", mGraphicsApi, mColorFormats, mDepthFormat);
-    cubicPipeline->prepare();
-    mPipelineCache.put(cubicPipeline->getName(), cubicPipeline);
+    std::shared_ptr<VkGraphicsPipeline> triangle =
+            std::make_shared<TrianglePipeline>("Triangle",
+                                            mGraphicsApi,
+                                            mColorFormat,
+                                            mDepthFormat);
+    triangle->prepare();
+    mPipelineCache.put(triangle->getName(), triangle);
 }
 
 void VkGraphicsPipelineManager::renderFrame() {

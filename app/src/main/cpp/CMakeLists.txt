@@ -104,8 +104,11 @@ if(vulkan-lib)
     target_include_directories(
             ${PROJECT_NAME}
             PUBLIC ${ANDROID_NDK}/sources/third_party/vulkan/src/include
+            PUBLIC ${ANDROID_NDK}/sources/third_party/shaderc/libshaderc/include
     )
-    target_link_libraries(${PROJECT_NAME} ${vulkan-lib})
+    add_library(shaderc STATIC IMPORTED)
+    set_target_properties(shaderc PROPERTIES IMPORTED_LOCATION "${ANDROID_NDK}/sources/third_party/shaderc/libs/c++_shared/${ANDROID_ABI}/libshaderc.a")
+    target_link_libraries(${PROJECT_NAME} ${vulkan-lib} shaderc)
     target_compile_definitions(
             ${PROJECT_NAME} PUBLIC XR_TUTORIAL_USE_VULKAN
     )
