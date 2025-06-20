@@ -23,7 +23,7 @@ private:
     void createXrInstance() override;
     void destroyXrInstance() override;
     void initializeSystemId() override;
-    void initializeDevice() override;
+    void initializeDeviceConfigurations() override;
     void createSession() override;
     void destroySession() override;
     void createReferenceSpace() override;
@@ -83,7 +83,7 @@ private:
     XrSystemId mSystemId = {};
     XrSystemProperties mXrSystemProperties = {XR_TYPE_SYSTEM_PROPERTIES};
 
-    // ViewConfigurations
+    // 所需的ViewConfigurations
     std::vector<XrViewConfigurationType> mAppViewConfigurationTypes = {
             XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO,
             XR_VIEW_CONFIGURATION_TYPE_PRIMARY_MONO

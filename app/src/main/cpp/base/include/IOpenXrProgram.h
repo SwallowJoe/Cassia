@@ -11,7 +11,7 @@ public:
     virtual void createXrInstance() = 0;
     virtual void destroyXrInstance() = 0;
     virtual void initializeSystemId() = 0;
-    virtual void initializeDevice() = 0;
+    virtual void initializeDeviceConfigurations() = 0;
     virtual void createSession() = 0;
     virtual void destroySession() = 0;
     virtual void createReferenceSpace() = 0;

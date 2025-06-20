@@ -63,8 +63,8 @@ void XrApp::initializeXrEnvironment() {
     createDebugMessenger();
     // 3. 初始化SystemId
     initializeSystemId();
-    // 4. 初始化设备
-    initializeDevice();
+    // 4. 初始化设备相关资源
+    initializeDeviceConfigurations();
     // 5. 创建Session
     createSession();
     // 6. 创建ReferenceSpace
@@ -150,8 +150,8 @@ void XrApp::initializeSystemId() {
                  "Failed to get system properties.")
 }
 
-void XrApp::initializeDevice() {
-    LOGI("initializeDevice");
+void XrApp::initializeDeviceConfigurations() {
+    LOGI("initializeDeviceConfigurations");
     initViewConfigurationViews();
     initEnvironmentBlendModes();
 }
@@ -189,17 +189,19 @@ void XrApp::initViewConfigurationViews() {
 void XrApp::selectViewConfiguration() {
     // 找第一个支持的ViewConfigurationType
     for (const XrViewConfigurationType &viewConfigurationType: mAppViewConfigurationTypes) {
-        if (std::find(mViewConfigurationTypes.begin(), mViewConfigurationTypes.end(), viewConfigurationType) != mViewConfigurationTypes.end()) {
+        if (std::find(mViewConfigurationTypes.begin(), mViewConfigurationTypes.end(),
+                      viewConfigurationType) != mViewConfigurationTypes.end()) {
             mViewConfigurationType = viewConfigurationType;
             break;
         }
     }
+
     if (mViewConfigurationType == XR_VIEW_CONFIGURATION_TYPE_MAX_ENUM) {
         LOGW("Failed to find a view configuration type. Defaulting to XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO.")
         mViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
     }
 
-    // LOGI("selectViewConfiguration " << mViewConfigurationType);
+    LOGI("selectViewConfiguration " << mViewConfigurationType);
 }
 
 void XrApp::initEnvironmentBlendModes() {
@@ -368,9 +370,9 @@ void XrApp::destroyXrSwapChains() {
         mGraphicsApi->FreeSwapchainImageData(mDepthSwapchainInfos[index].xrSwapchain);
 
         OPENXR_CHECK(xrDestroySwapchain(mColorSwapchainInfos[index].xrSwapchain),
-                     "Failed to destroy swap chain!");
+                     "Failed to destroy color swap chain!");
         OPENXR_CHECK(xrDestroySwapchain(mDepthSwapchainInfos[index].xrSwapchain),
-                     "Failed to destroy swap chain!");
+                     "Failed to destroy depth swap chain!");
     }
 }
 
@@ -385,17 +387,18 @@ bool XrApp::renderFrame() {
     XrFrameBeginInfo frameBeginInfo{XR_TYPE_FRAME_BEGIN_INFO};
     OPENXR_CHECK(xrBeginFrame(mSession, &frameBeginInfo), "Failed to begin frame!");
 
-    // 3. 绘制layer
+    // 3. 验证准备绘制layer
     RenderLayerInfo renderLayerInfo;
     renderLayerInfo.predictedDisplayTime = frameState.predictedDisplayTime;
     bool validateSessionState = (mSessionState == XR_SESSION_STATE_SYNCHRONIZED
             || mSessionState == XR_SESSION_STATE_VISIBLE
             || mSessionState == XR_SESSION_STATE_FOCUSED);
     if (validateSessionState && frameState.shouldRender) {
+        // 4. 绘制Layer
         renderLayers(renderLayerInfo);
     }
 
-    // 4. 告知Xr合成器此帧绘制完毕, 可以合成上屏了
+    // 5. 告知Xr合成器此帧绘制完毕, 可以合成上屏了
     XrFrameEndInfo frameEndInfo{XR_TYPE_FRAME_END_INFO};
     frameEndInfo.displayTime = frameState.predictedDisplayTime;
     frameEndInfo.environmentBlendMode = mEnvironmentBlendMode;
