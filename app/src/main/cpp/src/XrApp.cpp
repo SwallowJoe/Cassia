@@ -7,7 +7,7 @@
 #include "XrApp.h"
 #include "core/logging/Log.h"
 #include "renderer/openxr/xrcommon/OpenXRDebugUtils.h"
-#include "Color.h"
+#include "core/base/include/Color.h"
 #include <algorithm>
 #include <random>
 #include <memory>

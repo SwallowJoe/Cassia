@@ -41,8 +41,8 @@ FetchContent_MakeAvailable(OpenXR)
 # 包含目录
 include_directories(
         "src"
-        "src/base"
-        "src/base/include"
+        "src/core/base"
+        "src/core/base/include"
         "src/core"
         "src/core/math"
         "src/core/memory"

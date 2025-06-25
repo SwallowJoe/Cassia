@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "base/include/IOpenXrProgram.h"
-#include "base/include/SwapchainInfo.h"
-#include "base/include/RenderLayerInfo.h"
-#include "base/include/AndroidAppState.h"
+#include "core/base/include/IOpenXrProgram.h"
+#include "core/base/include/SwapchainInfo.h"
+#include "core/base/include/RenderLayerInfo.h"
+#include "core/base/include/AndroidAppState.h"
 #include "renderer/openxr/xrcommon/GraphicsAPI.h"
 #include "renderer/openxr/xrcommon/GraphicsAPI_Vulkan.h"
 #include "renderer/render/pipeline/VkGraphicsPipelineManager.h"
