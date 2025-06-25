@@ -41,6 +41,8 @@ FetchContent_MakeAvailable(OpenXR)
 # 包含目录
 include_directories(
         "src"
+        "src/base"
+        "src/base/include"
         "src/core"
         "src/core/math"
         "src/core/memory"
@@ -60,9 +62,11 @@ include_directories(
         "src/renderer/openxr/session"
         "src/renderer/openxr/space"
         "src/renderer/openxr/compositor"
+        "src/renderer/openxr/xrcommon"
         "src/renderer/shaders"
         "src/renderer/camera"
-        "src/renderer/render_system"
+        "src/renderer/render"
+        "src/renderer/render/pipeline"
         "src/resources"
         "src/resources/mesh"
         "src/resources/texture"

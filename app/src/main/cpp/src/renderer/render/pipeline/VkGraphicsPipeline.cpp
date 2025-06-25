@@ -6,7 +6,7 @@
 #include <utility>
 #include <shaderc/shaderc.hpp>
 #include "VkGraphicsPipeline.h"
-#include "Log.h"
+#include "../../../core/logging/Log.h"
 
 VkGraphicsPipeline::VkGraphicsPipeline(std::string name,
                                        std::shared_ptr<GraphicsAPI_Vulkan> api,

@@ -5,7 +5,7 @@
 // OpenXR Tutorial for Khronos Group
 
 #pragma once
-#include <HelperFunctions.h>
+#include "HelperFunctions.h"
 
 // Platform headers
 #if defined(_WIN32)
@@ -102,7 +102,7 @@
 #endif
 
 // OpenXR Helper
-#include <OpenXRHelper.h>
+#include "OpenXRHelper.h"
 
 enum GraphicsAPI_Type : uint8_t {
     UNKNOWN,

@@ -12,7 +12,7 @@
 #include <openxr/openxr_platform.h>
 
 // For DEBUG_BREAK
-#include <HelperFunctions.h>
+#include "HelperFunctions.h"
 
 // XR_DOCS_TAG_BEGIN_Helper_Functions0
 inline void OpenXRDebugBreak() {

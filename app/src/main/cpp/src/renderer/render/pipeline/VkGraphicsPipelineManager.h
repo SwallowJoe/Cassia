@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GraphicsAPI_Vulkan.h"
+#include "../../renderer/openxr/xrcommon/GraphicsAPI_Vulkan.h"
 #include "LRUCache.h"
 #include "VkGraphicsPipeline.h"
 #include <algorithm>

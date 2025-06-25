@@ -8,9 +8,9 @@
 #include "base/include/SwapchainInfo.h"
 #include "base/include/RenderLayerInfo.h"
 #include "base/include/AndroidAppState.h"
-#include "xrcommon/GraphicsAPI.h"
-#include "xrcommon/GraphicsAPI_Vulkan.h"
-#include "pipeline/VkGraphicsPipelineManager.h"
+#include "renderer/openxr/xrcommon/GraphicsAPI.h"
+#include "renderer/openxr/xrcommon/GraphicsAPI_Vulkan.h"
+#include "renderer/render/pipeline/VkGraphicsPipelineManager.h"
 
 class XrApp : private IOpenXrProgram {
 public:

@@ -5,8 +5,8 @@
 #define LOG_TAG "XrApp"
 
 #include "XrApp.h"
-#include "Log.h"
-#include "xrcommon/OpenXRDebugUtils.h"
+#include "core/logging/Log.h"
+#include "renderer/openxr/xrcommon/OpenXRDebugUtils.h"
 #include "Color.h"
 #include <algorithm>
 #include <random>

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GraphicsAPI_Vulkan.h"
+#include "../../renderer/openxr/xrcommon/GraphicsAPI_Vulkan.h"
 #include <shaderc/shaderc.hpp>
 
 class VkGraphicsPipeline {

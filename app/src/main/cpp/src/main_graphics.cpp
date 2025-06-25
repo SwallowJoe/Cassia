@@ -3,12 +3,12 @@
 
 #include <android_native_app_glue.h>
 // OpenXR Headers
-#include "DebugOutput.h"
-#include "GraphicsAPI_Vulkan.h"
-#include "OpenXRDebugUtils.h"
+#include "renderer/openxr/xrcommon/DebugOutput.h"
+#include "renderer/openxr/xrcommon/GraphicsAPI_Vulkan.h"
+#include "renderer/openxr/xrcommon/OpenXRDebugUtils.h"
 
 #include "XrApp.h"
-#include "Log.h"
+#include "core/logging/Log.h"
 
 void android_main(struct android_app *app) {
     JNIEnv* env;
