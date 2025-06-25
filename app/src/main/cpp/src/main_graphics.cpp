@@ -3,9 +3,9 @@
 
 #include <android_native_app_glue.h>
 // OpenXR Headers
-#include "xrcommon/DebugOutput.h"
-#include "xrcommon/GraphicsAPI_Vulkan.h"
-#include "xrcommon/OpenXRDebugUtils.h"
+#include "DebugOutput.h"
+#include "GraphicsAPI_Vulkan.h"
+#include "OpenXRDebugUtils.h"
 
 #include "XrApp.h"
 #include "Log.h"

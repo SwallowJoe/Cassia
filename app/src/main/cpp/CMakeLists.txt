@@ -38,42 +38,55 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(OpenXR)
 
-# Files
-set(SOURCES
-        "main_graphics.cpp"
-        "XrApp.cpp"
-############### base ##############
-############### core ##############
-######## core/components ##########
-        "core/components/Cubic.cpp"
-######### core/pipeline ###########
-        "core/pipeline/VkGraphicsPipelineManager.cpp"
-        "core/pipeline/VkGraphicsPipeline.cpp"
-        "core/pipeline/CubicPipeline.cpp"
-######### core/shaders  ###########
-############### OPENXR ############
-        "xrcommon/GraphicsAPI.cpp"
-        "xrcommon/GraphicsAPI_Vulkan.cpp"
-        "xrcommon/OpenXRDebugUtils.cpp")
+# 包含目录
+include_directories(
+        "src"
+        "src/core"
+        "src/core/math"
+        "src/core/memory"
+        "src/core/logging"
+        "src/core/profiling"
+        "src/platform"
+        "src/platform/window"
+        "src/platform/input"
+        "src/platform/filesystem"
+        "src/renderer"
+        "src/renderer/vulkan"
+        "src/renderer/vulkan/device"
+        "src/renderer/vulkan/swapchain"
+        "src/renderer/vulkan/pipeline"
+        "src/renderer/vulkan/resources"
+        "src/renderer/openxr"
+        "src/renderer/openxr/session"
+        "src/renderer/openxr/space"
+        "src/renderer/openxr/compositor"
+        "src/renderer/shaders"
+        "src/renderer/camera"
+        "src/renderer/render_system"
+        "src/resources"
+        "src/resources/mesh"
+        "src/resources/texture"
+        "src/resources/material"
+        "src/resources/asset_database"
+        "src/ecs"
+        "src/scripting"
+        "src/physics"
+        "src/application"
+        "src/application/scene"
+        "src/application/logic"
+)
+
+# 添加所有源文件
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+# 添加所有头文件
+file(GLOB_RECURSE HEADERS "src/*.h" "src/*.hpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-target_include_directories(
-        ${PROJECT_NAME}
-        PRIVATE
-        # In this repo
-        base
-        base/include
-        core
-        core/components
-        core/pipeline
-        core/shaders
-        jni
-        utils
-        xrcommon
-        # From OpenXR repo
-        "${openxr_SOURCE_DIR}/src/common"
-        "${openxr_SOURCE_DIR}/external/include"
-)
+
+# 添加第三方依赖库
+# add_subdirectory("external")
+
 
 # export ANativeActivity_onCreate for java to call.
 set_property(
